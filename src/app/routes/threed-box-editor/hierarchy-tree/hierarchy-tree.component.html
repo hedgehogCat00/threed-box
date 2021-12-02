@@ -1,0 +1,15 @@
+<nz-tree nzBlockNode [nzData]="nodes" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
+<ng-template #nzTreeTemplate let-node let-origin="origin">
+    <span class="custom-node">
+        <span *ngIf="!node.isLeaf">
+            <!-- <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"></i> -->
+            <span class="folder-name">{{ node.title }}</span>
+            <span class="folder-desc">{{origin.type}}</span>
+        </span>
+        <span *ngIf="node.isLeaf">
+            <i nz-icon nzType="file"></i>
+            <span class="file-name">{{ node.title }}</span>
+            <span class="file-desc">{{origin.type}}</span>
+        </span>
+    </span>
+</ng-template>

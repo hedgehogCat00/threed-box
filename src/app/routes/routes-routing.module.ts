@@ -32,12 +32,13 @@ const routes: Routes = [
       { path: 'pro', loadChildren: () => import('./pro/pro.module').then(m => m.ProModule) }
     ]
   },
-  // Blak Layout 空白布局
-  {
-    path: 'data-v',
-    component: LayoutBlankComponent,
-    children: [{ path: '', loadChildren: () => import('./data-v/data-v.module').then(m => m.DataVModule) }]
-  },
+  // // Blak Layout 空白布局
+  // {
+  //   path: 'data-v',
+  //   component: LayoutBlankComponent,
+  //   children: [{ path: '', loadChildren: () => import('./data-v/data-v.module').then(m => m.DataVModule) }]
+  // },
+  { path: 'threed-box-editor', component: LayoutBlankComponent, loadChildren: () => import('./threed-box-editor/threed-box-editor.module').then((m) => m.ThreedBoxEditorModule) },
   // passport
   { path: '', loadChildren: () => import('./passport/passport.module').then(m => m.PassportModule), data: { preload: true } },
   { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) },
@@ -57,4 +58,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class RouteRoutingModule {}
+export class RouteRoutingModule { }

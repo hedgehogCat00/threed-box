@@ -19,7 +19,13 @@
     "paths": {
       "@shared": ["src/app/shared/index"],
       "@core": ["src/app/core/index"],
-      "@env/*": ["src/environments/*"]
+      "@env/*": [
+        "src/environments/*"
+      ],
+      "threed-box": [
+        "dist/threed-box/threed-box",
+        "dist/threed-box"
+      ]
     }
   },
   "angularCompilerOptions": {

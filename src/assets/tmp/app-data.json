@@ -346,7 +346,8 @@
               "i18n": "menu.extras.poi"
             }
           ]
-        }
+        },
+        {"text":"3D Box","link":"/threed-box-editor"}
       ]
     }
   ]

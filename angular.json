@@ -116,6 +116,37 @@
           }
         }
       }
+    },
+    "threed-box": {
+      "projectType": "library",
+      "root": "projects/threed-box",
+      "sourceRoot": "projects/threed-box/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/threed-box/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/threed-box/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/threed-box/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/threed-box/src/test.ts",
+            "tsConfig": "projects/threed-box/tsconfig.spec.json",
+            "karmaConfig": "projects/threed-box/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "ng-alain"
