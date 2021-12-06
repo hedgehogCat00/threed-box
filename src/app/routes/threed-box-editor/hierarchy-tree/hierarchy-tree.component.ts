@@ -35,7 +35,8 @@ export class ThreedBoxEditorHierarchyTreeComponent implements OnInit {
       Object.assign(curr.node, {
         key: obj.uuid,
         title: obj.name,
-        type: obj.type
+        type: obj.type,
+        isLeaf: true
       });
 
       if (curr.parent) {
@@ -44,7 +45,8 @@ export class ThreedBoxEditorHierarchyTreeComponent implements OnInit {
 
       if (obj.children && obj.children.length) {
         Object.assign(curr.node, {
-          children: []
+          children: [],
+          isLeaf: false
         });
         obj.children.forEach(child => {
           queue.push({

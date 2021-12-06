@@ -1,0 +1,5 @@
+<nz-tabset [nzTabPosition]="'left'">
+    <nz-tab *ngFor="let tab of tabs" [nzTitle]="tab.name">
+        {{ tab.content }}
+    </nz-tab>
+</nz-tabset>

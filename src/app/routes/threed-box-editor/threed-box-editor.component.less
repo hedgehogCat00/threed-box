@@ -12,7 +12,19 @@
     }
 
     .r-side-bar {
+        display: flex;
+        flex-direction: column;
         min-width: 15rem;
         background: #565656;
+
+        .hierarchy-container {
+            height: 40%;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .tools-container {
+            flex-grow: 1;
+        }
     }
 }
