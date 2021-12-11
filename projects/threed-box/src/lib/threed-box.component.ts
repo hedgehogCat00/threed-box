@@ -1,6 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
+import { ProRayCasterController } from './controllers/pro-raycaster-controller';
+import { State } from './entity';
 import { ThreedBoxService } from './threed-box.service';
 
 @Component({
@@ -11,30 +14,59 @@ import { ThreedBoxService } from './threed-box.service';
 export class ThreedBoxComponent implements OnInit, AfterViewInit {
   @ViewChild('webglContainer')
   canvasRef!: ElementRef;
+  @Input() config!: any;
+  @Output() readonly selected = new EventEmitter();
+  // private proRaycasterCtrllor: ProRayCasterController = new ProRayCasterController();
 
-  constructor(
-    public compSrv: ThreedBoxService
-  ) { }
+  constructor(public compSrv: ThreedBoxService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
-    this.compSrv.init(this.canvasRef.nativeElement);
+    const canvas = this.canvasRef.nativeElement;
+    canvas.addEventListener('click', this.onClick.bind(this));
+
+    // this.proRaycasterCtrllor.onIntersected$.subscribe(this.onIntersected.bind(this));
+    this.compSrv.init(canvas);
   }
 
   loadScene$(path: string) {
-    return this.compSrv.loadModel$(path)
-      .pipe(
-        switchMap(model => {
-          // model.traverse(obj => {
-          //   if (obj.isMesh) {
-          //     obj.material = this.compSrv.testLambertMat;
-          //   }
-          // })
-          this.compSrv.scene.add(model);
-          return of(model);
-        })
-      );
+    return this.compSrv.loadModel$(path).pipe(
+      switchMap(model => {
+        // model.traverse(obj => {
+        //   if (obj.isMesh) {
+        //     obj.material = this.compSrv.testLambertMat;
+        //   }
+        // })
+        this.compSrv.scene.add(model);
+        return of(model);
+      })
+    );
+  }
+
+  selectState(obj: THREE.Object3D, state: State) {
+    obj.userData.activeStateId = state.id;
+  }
+
+  createState(obj: THREE.Object3D, state: State) {
+    const newState = {
+      id: state.id,
+      name: state.name,
+      props: {
+        // 存储当前状态
+        object: {},
+        material: {}
+      }
+    };
+    if (!obj.userData.states) {
+      obj.userData.states = [newState];
+    } else {
+      obj.userData.states.push(newState);
+    }
+  }
+
+  private onClick() {
+    const intersected = this.compSrv.proRaycasterCtrllor.intersectedObj;
+    this.selected.next(intersected);
   }
 }

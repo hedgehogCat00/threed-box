@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { zip, fromEvent, Observable } from 'rxjs';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+
+import { ProRayCasterController } from './controllers/pro-raycaster-controller';
 
 @Injectable()
 export class ThreedBoxService {
@@ -12,7 +14,16 @@ export class ThreedBoxService {
   camCtrls: any;
   pause = true;
 
-  constructor() { }
+  // 存储鼠标相对于canvas中心位置
+  private mousePos: { x: number; y: number } = { x: 0, y: 0 };
+
+  // proCamCtrllor: ProCamController;
+
+  proRaycasterCtrllor: ProRayCasterController = new ProRayCasterController();
+  intersected!: THREE.Object3D;
+  private intersectedEvt = new EventEmitter();
+
+  constructor() {}
 
   init(canvas: HTMLCanvasElement) {
     this.scene = this.initScene(canvas);
@@ -25,11 +36,15 @@ export class ThreedBoxService {
     const width = canvas.offsetWidth;
     const height = canvas.offsetHeight;
 
-    const ambientLight = new THREE.AmbientLight(new THREE.Color("rgb(58, 94, 129)"));
+    const ambientLight = new THREE.AmbientLight(new THREE.Color('rgb(58, 94, 129)'));
     this.scene.add(ambientLight);
 
+    canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+    // canvas.addEventListener('click', this.onClick.bind(this));
+    this.proRaycasterCtrllor.onIntersected$.subscribe(this.onIntersected.bind(this));
+
     zip(
-      fromEvent(window, 'resize'),
+      fromEvent(window, 'resize')
       // this.globalSrv.layoutChangedEvt.pipe(delay(300))
     ).subscribe(() => {
       this.renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
@@ -48,6 +63,17 @@ export class ThreedBoxService {
         subs.next(obj);
       });
     });
+  }
+
+  private onMouseMove(evt: MouseEvent) {
+    const canvas = this.renderer.domElement;
+
+    this.mousePos.x = (evt.clientX / canvas.width) * 2 - 1;
+    this.mousePos.y = -(evt.clientY / canvas.height) * 2 + 1;
+  }
+
+  private onIntersected(obj: THREE.Object3D) {
+    this.intersected = obj;
   }
 
   private initRenderer(canvas: HTMLCanvasElement) {
@@ -85,6 +111,7 @@ export class ThreedBoxService {
     }
 
     this.camCtrls.update();
+    this.proRaycasterCtrllor.checkIntersection(this.mousePos, this.scene, this.camera);
     this.renderer.render(this.scene, this.camera);
 
     // this.stats.update();

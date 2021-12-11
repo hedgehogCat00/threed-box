@@ -9,5 +9,4 @@ module.exports = {
   bracketSpacing: true,
   proseWrap: 'preserve',
   trailingComma: 'none',
-  endOfLine: 'lf'
 };

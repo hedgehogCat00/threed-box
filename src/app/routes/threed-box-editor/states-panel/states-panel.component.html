@@ -1,0 +1,8 @@
+<h3>States</h3>
+<div class="states-container">
+    <div *ngFor="let state of states; index as i" class="state">
+        <div (click)="onSelectState(state)">{{ state.name }}</div>
+        <i *ngIf="i > 0" nz-icon nzType="delete" (click)="onRemoveState(state)"></i>
+    </div>
+</div>
+<button nz-button nzType="primary" (click)="addState()"> + </button>

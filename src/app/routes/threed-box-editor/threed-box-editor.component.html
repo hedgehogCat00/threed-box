@@ -1,14 +1,18 @@
 <div class="editor-container">
     <div class="side-bar"></div>
     <div class="view">
-        <threed-box #threedBox></threed-box>
+        <threed-box #threedBox (selected)="onSelected($event)"></threed-box>
     </div>
     <div class="r-side-bar">
         <div class="hierarchy-container">
             <hierarchy-tree [scene]="scene"></hierarchy-tree>
         </div>
         <div class="tools-container">
-            <prop-tabs [scene]="scene"></prop-tabs>
+            <ng-container *ngIf="selectedObj">
+                <states-panel [target]="selectedObj" (createState)="onCreateState($event)"
+                    (deleteState)="onDeleteState($event)"></states-panel>
+                <prop-tabs [scene]="scene"></prop-tabs>
+            </ng-container>
         </div>
     </div>
 </div>

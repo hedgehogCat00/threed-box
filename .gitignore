@@ -11,7 +11,7 @@ scripts/var.less
 # src/assets/style.compact.css
 
 # dependencies
-/node_modules
+**/node_modules
 /yarn.lock
 
 # IDEs and editors

@@ -59,6 +59,7 @@ module.exports = {
         '@angular-eslint/use-component-view-encapsulation': 'off',
         '@angular-eslint/no-input-rename': 'off',
         '@angular-eslint/no-output-native': 'off',
+        '@angular-eslint/no-empty-lifecycle-method': 'off',
         '@typescript-eslint/array-type': [
           'error',
           {
