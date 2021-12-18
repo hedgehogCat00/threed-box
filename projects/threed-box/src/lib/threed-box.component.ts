@@ -4,6 +4,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { ProRayCasterController } from './controllers/pro-raycaster-controller';
 import { State } from './entity';
+import { StateService } from './state.service';
 import { ThreedBoxService } from './threed-box.service';
 
 @Component({
@@ -18,9 +19,12 @@ export class ThreedBoxComponent implements OnInit, AfterViewInit {
   @Output() readonly selected = new EventEmitter();
   // private proRaycasterCtrllor: ProRayCasterController = new ProRayCasterController();
 
-  constructor(public compSrv: ThreedBoxService) {}
+  constructor(
+    public compSrv: ThreedBoxService,
+    public stateSrv: StateService
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngAfterViewInit() {
     const canvas = this.canvasRef.nativeElement;

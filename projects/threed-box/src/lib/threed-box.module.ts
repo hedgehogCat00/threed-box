@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { StateService } from './state.service';
 
 import { ThreedBoxComponent } from './threed-box.component';
 import { ThreedBoxService } from './threed-box.service';
@@ -7,6 +8,6 @@ import { ThreedBoxService } from './threed-box.service';
   declarations: [ThreedBoxComponent],
   imports: [],
   exports: [ThreedBoxComponent],
-  providers: [ThreedBoxService]
+  providers: [StateService, ThreedBoxService]
 })
-export class ThreedBoxModule {}
+export class ThreedBoxModule { }

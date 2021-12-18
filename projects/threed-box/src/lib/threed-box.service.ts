@@ -23,7 +23,7 @@ export class ThreedBoxService {
   intersected!: THREE.Object3D;
   private intersectedEvt = new EventEmitter();
 
-  constructor() {}
+  constructor() { }
 
   init(canvas: HTMLCanvasElement) {
     this.scene = this.initScene(canvas);
@@ -47,8 +47,10 @@ export class ThreedBoxService {
       fromEvent(window, 'resize')
       // this.globalSrv.layoutChangedEvt.pipe(delay(300))
     ).subscribe(() => {
-      this.renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
-      this.camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+      console.log('resize')
+      const rect = canvas.getBoundingClientRect();
+      this.renderer.setSize(rect.width, rect.height);
+      this.camera.aspect = rect.width / rect.height;
     });
 
     this.animate();
@@ -66,10 +68,13 @@ export class ThreedBoxService {
   }
 
   private onMouseMove(evt: MouseEvent) {
-    const canvas = this.renderer.domElement;
-
-    this.mousePos.x = (evt.clientX / canvas.width) * 2 - 1;
-    this.mousePos.y = -(evt.clientY / canvas.height) * 2 + 1;
+    const canvas = this.renderer.domElement as HTMLCanvasElement;
+    // 确保鼠标坐标正确
+    const rect = canvas.getBoundingClientRect();
+    const left = evt.clientX - rect.left;
+    const top = evt.clientY - rect.top;
+    this.mousePos.x = (left / canvas.width) * 2 - 1;
+    this.mousePos.y = -(top / canvas.height) * 2 + 1;
   }
 
   private onIntersected(obj: THREE.Object3D) {

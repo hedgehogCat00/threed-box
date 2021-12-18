@@ -1,7 +1,7 @@
 export interface State {
   name: string;
   id: string;
-  [key: string]: any;
+  values: any;
 }
 
 export const stateGroupProps = [

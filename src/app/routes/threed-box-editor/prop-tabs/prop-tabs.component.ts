@@ -10,14 +10,16 @@ export class PropTabsComponent implements OnInit {
     name: 'world',
     content: 'this is world props'
   }, {
-    name: 'property',
-    content: 'this is property props'
+    name: 'object',
+    content: 'this is object props'
   }, {
     name: 'material',
     content: 'this is material props'
   }]
 
   @Input() scene!: THREE.Scene;
+  @Input() target!: THREE.Object3D;
+
   constructor() { }
 
   ngOnInit(): void {
