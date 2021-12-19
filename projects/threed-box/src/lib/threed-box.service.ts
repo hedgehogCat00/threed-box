@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
 import { ProRayCasterController } from './controllers/pro-raycaster-controller';
+import { IsMousemove } from './utils/is-mousemove';
 
 @Injectable()
 export class ThreedBoxService {
@@ -23,6 +24,9 @@ export class ThreedBoxService {
   intersected!: THREE.Object3D;
   private intersectedEvt = new EventEmitter();
 
+  private doIntersect!: boolean;
+  private isCanvasMousemove!: IsMousemove;
+
   constructor() { }
 
   init(canvas: HTMLCanvasElement) {
@@ -40,6 +44,11 @@ export class ThreedBoxService {
     this.scene.add(ambientLight);
 
     canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+    this.isCanvasMousemove = new IsMousemove(canvas, () => {
+      this.doIntersect = true;
+    }, () => {
+      this.doIntersect = false;
+    });
     // canvas.addEventListener('click', this.onClick.bind(this));
     this.proRaycasterCtrllor.onIntersected$.subscribe(this.onIntersected.bind(this));
 
@@ -116,7 +125,9 @@ export class ThreedBoxService {
     }
 
     this.camCtrls.update();
-    this.proRaycasterCtrllor.checkIntersection(this.mousePos, this.scene, this.camera);
+    if (this.doIntersect) {
+      this.proRaycasterCtrllor.checkIntersection(this.mousePos, this.scene, this.camera);
+    }
     this.renderer.render(this.scene, this.camera);
 
     // this.stats.update();

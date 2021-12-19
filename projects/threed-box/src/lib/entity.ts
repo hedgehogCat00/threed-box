@@ -1,7 +1,11 @@
 export interface State {
   name: string;
   id: string;
-  values: any;
+  values: StateValues;
+}
+export interface StateValues {
+  object: any,
+  material?: any | any[]
 }
 
 export const stateGroupProps = [

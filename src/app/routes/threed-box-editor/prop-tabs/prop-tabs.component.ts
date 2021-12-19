@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+// import { ObjectPropComponent } from './object-prop/object-prop.component';
 
 @Component({
   selector: 'prop-tabs',
@@ -6,19 +7,20 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./prop-tabs.component.less']
 })
 export class PropTabsComponent implements OnInit {
-  tabs = [{
-    name: 'world',
-    content: 'this is world props'
-  }, {
-    name: 'object',
-    content: 'this is object props'
-  }, {
-    name: 'material',
-    content: 'this is material props'
-  }]
+  // tabs = [{
+  //   name: 'world',
+  //   component: null
+  // }, {
+  //   name: 'object',
+  //   component: ObjectPropComponent
+  // }, {
+  //   name: 'material',
+  //   content: 'this is material props'
+  // }]
 
   @Input() scene!: THREE.Scene;
   @Input() target!: THREE.Object3D;
+  @Input() targetActiveStateIdx!: number;
 
   constructor() { }
 

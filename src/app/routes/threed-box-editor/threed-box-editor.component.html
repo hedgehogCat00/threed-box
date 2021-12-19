@@ -13,7 +13,7 @@
         <div class="tools-container">
             <ng-container *ngIf="selectedObj">
                 <states-panel [target]="selectedObj" (createState)="onCreateState($event)"
-                    (deleteState)="onDeleteState($event)"></states-panel>
+                    (deleteState)="onDeleteState($event)" (selectState)="onSelectState($event)"></states-panel>
                 <prop-tabs [scene]="scene" [target]="selectedObj"></prop-tabs>
             </ng-container>
         </div>

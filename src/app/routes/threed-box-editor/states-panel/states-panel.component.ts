@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { State } from 'projects/threed-box/src/lib/entity';
 import { UtilsService } from 'src/app/shared/services/utils.service';
+import { StatesUtilService } from './states-util.service';
 
 @Component({
   selector: 'states-panel',
@@ -21,17 +22,32 @@ export class StatesPanelComponent implements OnInit {
     return [];
   }
 
-  constructor(private utilsSrv: UtilsService) { }
+  constructor(
+    // private utilsSrv: UtilsService,
+    private stateUtilSrv: StatesUtilService
+  ) { }
 
   ngOnInit(): void { }
 
   addState() {
     if (!this.states.length) {
       // 创建默认状态以及新状态
-      this.createState.next({ fromEmpty: true, states: [this.genState('Default'), this.genState()] });
+      this.createState.next({
+        fromEmpty: true, states: [
+          // this.genState('Default'), 
+          // this.genState()
+          this.stateUtilSrv.genState('Default'),
+          this.stateUtilSrv.genState(undefined, []),
+        ]
+      });
     } else {
       // 只创建新状态
-      this.createState.next({ fromEmpty: false, states: [this.genState()] });
+      this.createState.next({
+        fromEmpty: false, states: [
+          // this.genState()
+          this.stateUtilSrv.genState(undefined, this.states),
+        ]
+      });
     }
   }
 
@@ -43,22 +59,25 @@ export class StatesPanelComponent implements OnInit {
     this.deleteState.next(state);
   }
 
-  private genState(name?: string): State {
-    return {
-      name: name ? name : this.getNewStateName(),
-      id: this.utilsSrv.genUUID(),
-      values: {}
-    };
-  }
+  // genState(name?: string): State {
+  //   // return {
+  //   //   name: name ? name : this.getNewStateName(),
+  //   //   id: this.utilsSrv.genUUID(),
+  //   //   values: {
+  //   //     object: {},
+  //   //     materials: []
+  //   //   }
+  //   // };
+  // }
 
-  private getNewStateName() {
-    if (!this.states.length) {
-      return 'State1';
-    }
-    let stateIdxes = this.states
-      .filter(s => /State\d+/.test(s.name))
-      .map(s => Number(s.name.replace(/State(\d+)/, '$1')));
-    const idx = Math.max(...stateIdxes, 0) + 1;
-    return `State${idx}`;
-  }
+  // private getNewStateName() {
+  //   if (!this.states.length) {
+  //     return 'State1';
+  //   }
+  //   let stateIdxes = this.states
+  //     .filter(s => /State\d+/.test(s.name))
+  //     .map(s => Number(s.name.replace(/State(\d+)/, '$1')));
+  //   const idx = Math.max(...stateIdxes, 0) + 1;
+  //   return `State${idx}`;
+  // }
 }

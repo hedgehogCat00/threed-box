@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Scene } from 'three';
 // import { CommandManagerService } from './command-manager.service';
 import { AddStateCommand, RemoveStateCommand } from './command/state.command';
-import { State } from './entity';
+import { State, StateValues } from './entity';
 
 @Injectable()
 export class StateService {
@@ -42,13 +42,16 @@ export class StateService {
     }
   }
 
-  private genStateValues(obj: any) {
+  private genStateValues(obj: any): StateValues {
     if (obj instanceof Group) {
       return this.genGroupStateValues(obj);
     } else if (obj instanceof Scene) {
       return this.genSceneStateValues(obj);
     } else if (obj instanceof Mesh) {
       return this.genMeshStateValues(obj);
+    }
+    return {
+      object: {}
     }
   }
 
@@ -58,7 +61,9 @@ export class StateService {
       'environment',
       'fog'
     ];
-    return this.genObjStateValues(obj, keys);
+    return {
+      object: this.genObjStateValues(obj, keys),
+    };
   }
 
   private genGroupStateValues(obj: THREE.Group) {
@@ -67,7 +72,9 @@ export class StateService {
       'rotation',
       'scale'
     ];
-    return this.genObjStateValues(obj, keys);
+    return {
+      object: this.genObjStateValues(obj, keys)
+    };
   }
 
   private genMeshStateValues(obj: THREE.Mesh) {
@@ -75,12 +82,15 @@ export class StateService {
       'position',
       'rotation',
       'scale',
-      'material',
+      // 'material',
       'visible',
       'castShadow',
       'receiveShadow'
     ];
-    return this.genObjStateValues(obj, keys);
+    return {
+      object: this.genObjStateValues(obj, keys),
+      ...this.genObjStateValues(obj, ['material'])
+    };
   }
 
   private genMatStateValues(mat: THREE.Material | THREE.Material[]): any {

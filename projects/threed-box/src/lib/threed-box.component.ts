@@ -27,7 +27,7 @@ export class ThreedBoxComponent implements OnInit, AfterViewInit {
   ngOnInit(): void { }
 
   ngAfterViewInit() {
-    const canvas = this.canvasRef.nativeElement;
+    const canvas = this.canvasRef.nativeElement as HTMLCanvasElement;
     canvas.addEventListener('click', this.onClick.bind(this));
 
     // this.proRaycasterCtrllor.onIntersected$.subscribe(this.onIntersected.bind(this));

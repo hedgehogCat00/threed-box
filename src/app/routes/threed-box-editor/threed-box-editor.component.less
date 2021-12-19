@@ -20,9 +20,10 @@
     }
 
     .r-side-bar {
+        width: 20%;
         display: flex;
         flex-direction: column;
-        min-width: 15rem;
+        // min-width: 15rem;
         background: #565656;
 
         .hierarchy-container {
@@ -33,6 +34,8 @@
 
         .tools-container {
             flex-grow: 1;
+            max-height: 60%;
+            overflow-y: auto;
         }
     }
 }

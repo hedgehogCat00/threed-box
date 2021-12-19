@@ -7,6 +7,8 @@ import { ConfigManagerService } from './config-manager.service';
 import { StateEvt } from './states-panel/entity';
 import { CommandManagerService } from './command-manager.service';
 import { AddStateCommand, RemoveStateCommand } from './commands/state.command';
+import { StatesPanelComponent } from './states-panel/states-panel.component';
+import { StatesUtilService } from './states-panel/states-util.service';
 
 @Component({
   selector: 'app-threed-box-editor',
@@ -20,7 +22,8 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
 
   constructor(
     private configSrv: ConfigManagerService,
-    public commandSrv: CommandManagerService
+    public commandSrv: CommandManagerService,
+    private statesUtilSrv: StatesUtilService
   ) { }
 
   ngOnInit(): void { }
@@ -32,7 +35,23 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
       this.scene = this.threedBox.compSrv.scene;
 
       this.testAddBox();
+
+      // TODO 给每一物体创建默认状态
+      const stateSrv = this.threedBox.stateSrv
+      this.scene.traverse(obj => {
+        const state = this.statesUtilSrv.genState('Default');
+        stateSrv.addState(obj, state);
+      });
+
     });
+  }
+
+  onSelectState(state: State) {
+    const idx = this.selectedObj.userData.states.findIndex((s: State) => s.id === state.id);
+    this.selectedObj.userData.activeStateIdx = idx;
+
+    // TODO 将该状态的值赋予选中物体
+    this.setState2Obj(this.selectedObj, state);
   }
 
   onCreateState(evt: StateEvt) {
@@ -54,7 +73,7 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
       this.commandSrv.exec(addCmd, stateSrv);
     }
 
-    this.configSrv.recordObjState(this.selectedObj);
+    // this.configSrv.recordObjState(this.selectedObj);
   }
 
   onDeleteState(state: State) {
@@ -63,7 +82,7 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
     const removeCmd = new RemoveStateCommand(this.selectedObj, state);
     this.commandSrv.exec(removeCmd, stateSrv);
 
-    this.configSrv.recordObjState(this.selectedObj);
+    // this.configSrv.recordObjState(this.selectedObj);
   }
 
   onSelected(obj: THREE.Object3D) {
@@ -79,6 +98,25 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
 
   exportConfig() {
     this.configSrv.export(this.scene);
+  }
+
+  /**
+   * 状态的值赋予物体
+   * @param obj 
+   * @param state 
+   */
+  private setState2Obj(obj: THREE.Object3D, state: State) {
+    // 针对物体属性
+    Object.entries(state.values.object).forEach(pair => {
+      const key = pair[0];
+      const value = pair[1];
+      const valType = typeof (obj as any)[key];
+      if (valType === 'boolean' || valType === 'string' || valType === 'number') {
+        (obj as any)[key] = value;
+      } else {
+        (obj as any)[key].copy(value);
+      }
+    })
   }
 
   private testAddBox() {

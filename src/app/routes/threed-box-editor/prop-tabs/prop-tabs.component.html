@@ -1,5 +1,14 @@
 <nz-tabset [nzTabPosition]="'left'">
-    <nz-tab *ngFor="let tab of tabs" [nzTitle]="tab.name">
+    <!-- <nz-tab *ngFor="let tab of tabs" [nzTitle]="tab.name">
         {{ tab.content }}
+    </nz-tab> -->
+    <nz-tab [nzTitle]="'world'">
+        this is world props
+    </nz-tab>
+    <nz-tab [nzTitle]="'object'">
+        <object-prop [object]="target" [activeStateIdx]="target.userData.activeStateIdx"></object-prop>
+    </nz-tab>
+    <nz-tab [nzTitle]="'world'">
+        this is world props
     </nz-tab>
 </nz-tabset>
