@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Scene } from 'three';
+// import { CommandManagerService } from './command-manager.service';
+import { AddStateCommand, RemoveStateCommand } from './command/state.command';
 import { State } from './entity';
 
 @Injectable()
 export class StateService {
 
-  constructor() { }
+  constructor(
+    // private commandSrv: CommandManagerService
+  ) { }
 
   addState(obj: THREE.Object3D, state: Partial<State>) {
     if (!obj.userData.states) {

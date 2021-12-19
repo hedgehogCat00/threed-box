@@ -5,6 +5,8 @@ import { ThreedBoxComponent } from 'projects/threed-box/src/public-api';
 import { ConfigManagerService } from './config-manager.service';
 
 import { StateEvt } from './states-panel/entity';
+import { CommandManagerService } from './command-manager.service';
+import { AddStateCommand, RemoveStateCommand } from './commands/state.command';
 
 @Component({
   selector: 'app-threed-box-editor',
@@ -17,7 +19,8 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
   selectedObj!: THREE.Object3D;
 
   constructor(
-    private configSrv: ConfigManagerService
+    private configSrv: ConfigManagerService,
+    public commandSrv: CommandManagerService
   ) { }
 
   ngOnInit(): void { }
@@ -36,11 +39,19 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
     const stateSrv = this.threedBox.stateSrv;
     if (evt.fromEmpty) {
       // 创建默认状态以及第一个状态
-      stateSrv.addState(this.selectedObj, evt.states[0]);
-      stateSrv.addState(this.selectedObj, evt.states[1]);
+      // stateSrv.addState(this.selectedObj, evt.states[0]);
+      // stateSrv.addState(this.selectedObj, evt.states[1]);
+
+      const addCmd1 = new AddStateCommand(this.selectedObj, evt.states[0]);
+      this.commandSrv.exec(addCmd1, stateSrv);
+
+      const addCmd2 = new AddStateCommand(this.selectedObj, evt.states[1]);
+      this.commandSrv.exec(addCmd2, stateSrv);
     } else {
       // 新建状态
-      stateSrv.addState(this.selectedObj, evt.states[0]);
+      // stateSrv.addState(this.selectedObj, evt.states[0]);
+      const addCmd = new AddStateCommand(this.selectedObj, evt.states[0]);
+      this.commandSrv.exec(addCmd, stateSrv);
     }
 
     this.configSrv.recordObjState(this.selectedObj);
@@ -48,7 +59,9 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
 
   onDeleteState(state: State) {
     const stateSrv = this.threedBox.stateSrv;
-    stateSrv.removeState(this.selectedObj, state);
+    // stateSrv.removeState(this.selectedObj, state);
+    const removeCmd = new RemoveStateCommand(this.selectedObj, state);
+    this.commandSrv.exec(removeCmd, stateSrv);
 
     this.configSrv.recordObjState(this.selectedObj);
   }

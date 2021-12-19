@@ -4,6 +4,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { ThreedBoxModule } from 'projects/threed-box/src/public-api';
 import { UtilsService } from 'src/app/shared/services/utils.service';
+import { CommandManagerService } from './command-manager.service';
 import { ConfigManagerService } from './config-manager.service';
 
 import { ThreedBoxEditorHierarchyTreeComponent } from './hierarchy-tree/hierarchy-tree.component';
@@ -22,6 +23,6 @@ const COMPONENTS: Array<Type<void>> = [
 @NgModule({
   imports: [SharedModule, ThreedBoxEditorRoutingModule, ThreedBoxModule, NzTreeModule, NzTabsModule],
   declarations: COMPONENTS,
-  providers: [UtilsService, ConfigManagerService]
+  providers: [UtilsService, CommandManagerService, ConfigManagerService]
 })
 export class ThreedBoxEditorModule { }

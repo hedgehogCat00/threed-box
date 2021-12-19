@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICommand } from './command/entity';
+import { ICommand } from './commands/entity';
 
 @Injectable()
 export class CommandManagerService implements ICommand {

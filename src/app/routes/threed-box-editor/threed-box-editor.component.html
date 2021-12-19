@@ -1,6 +1,7 @@
 <div class="editor-container">
     <div class="side-bar">
         <button nz-button nzType="primary" (click)="exportConfig()">导出</button>
+        <button nz-button nzType="primary" [disabled]="!commandSrv.canUndo" (click)="commandSrv.undo()">Undo</button>
     </div>
     <div class="view">
         <threed-box #threedBox (selected)="onSelected($event)"></threed-box>
