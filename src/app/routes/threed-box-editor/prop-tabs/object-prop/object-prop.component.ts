@@ -1,7 +1,9 @@
 import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { SFSchema } from '@delon/form';
+import { SFSchema, SFValueChange } from '@delon/form';
 import { State } from 'projects/threed-box/src/lib/entity';
 import { Euler, Vector3 } from 'three';
+import { CommandManagerService } from '../../command-manager.service';
+import { SetEulerCommand } from '../../commands/object.command';
 
 @Component({
   selector: 'object-prop',
@@ -23,13 +25,31 @@ export class ObjectPropComponent implements OnInit, AfterViewInit, OnChanges {
   schema!: SFSchema;
   data!: any;
 
-  constructor() { }
+  constructor(
+    public commandSrv: CommandManagerService,
+  ) { }
 
   ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.initSchema();
+  }
+
+  onFormValueChange(evt: SFValueChange) {
+    console.log('form value changed', evt)
+    const pathVal = evt.pathValue;
+
+    if (evt.path === '/rotation') {
+      // ['x', 'y', 'z'].forEach(k => {
+      //   // 当前状态赋值
+      //   this.data.rotation[k] = pathVal[k];
+      // });
+      // // 同步到物体
+      // this.object.rotation.set(pathVal.x, pathVal.y, pathVal.z);
+      const cmd = new SetEulerCommand(this.data, this.object as any, pathVal);
+      this.commandSrv.exec(cmd, null);
+    }
   }
 
   private initSchema() {
@@ -55,7 +75,7 @@ export class ObjectPropComponent implements OnInit, AfterViewInit, OnChanges {
 
   private genPropSchema(key: string, val: any): any {
     const obj = this.object as any;
-    if (obj[key] instanceof Vector3 || obj[key] instanceof Euler) {
+    if (obj[key] instanceof Vector3) {
       return {
         type: 'object',
         properties: {
@@ -65,6 +85,18 @@ export class ObjectPropComponent implements OnInit, AfterViewInit, OnChanges {
         },
         ui: {
           widget: 'vec3'
+        }
+      }
+    } else if (obj[key] instanceof Euler) {
+      return {
+        type: 'object',
+        properties: {
+          x: { type: 'number' },
+          y: { type: 'number' },
+          z: { type: 'number' },
+        },
+        ui: {
+          widget: 'euler'
         }
       }
     }

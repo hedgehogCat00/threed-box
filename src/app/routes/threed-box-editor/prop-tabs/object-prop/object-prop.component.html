@@ -1,1 +1,2 @@
-<sf *ngIf="schema" [layout]="'vertical'" [schema]="schema" [formData]="data" [button]="'none'"></sf>
+<sf *ngIf="schema" [layout]="'vertical'" [schema]="schema" [formData]="data" [button]="'none'"
+    (formValueChange)="onFormValueChange($event)"></sf>
