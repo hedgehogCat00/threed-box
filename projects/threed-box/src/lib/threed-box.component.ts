@@ -3,9 +3,11 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { ProRayCasterController } from './controllers/pro-raycaster-controller';
-import { State } from './entity';
+import { LayerCode, State, TransformControlEvt } from './entity';
 import { StateService } from './state.service';
 import { ThreedBoxService } from './threed-box.service';
+import { TransControlService } from './trans-control.service';
+import { findAncestorWhere } from './utils/tools';
 
 @Component({
   selector: 'threed-box',
@@ -17,7 +19,17 @@ export class ThreedBoxComponent implements OnInit, AfterViewInit {
   canvasRef!: ElementRef;
   @Input() config!: any;
   @Output() readonly selected = new EventEmitter();
+
+  @Output()
+  positionChanged = new EventEmitter<TransformControlEvt>();
+
+  @Output()
+  scaleChanged = new EventEmitter<TransformControlEvt>();
+
+  @Output()
+  rotationChanged = new EventEmitter<TransformControlEvt>();
   // private proRaycasterCtrllor: ProRayCasterController = new ProRayCasterController();
+  private transControlSrv!: TransControlService;
 
   constructor(
     public compSrv: ThreedBoxService,
@@ -32,6 +44,11 @@ export class ThreedBoxComponent implements OnInit, AfterViewInit {
 
     // this.proRaycasterCtrllor.onIntersected$.subscribe(this.onIntersected.bind(this));
     this.compSrv.init(canvas);
+
+    this.transControlSrv = new TransControlService(this.compSrv.camCtrls, this.compSrv.scene, this.compSrv.renderer.domElement);
+    this.transControlSrv.positionChanged$.subscribe(evt => this.positionChanged.emit(evt));
+    this.transControlSrv.rotationChanged$.subscribe(evt => this.rotationChanged.emit(evt));
+    this.transControlSrv.scaleChanged$.subscribe(evt => this.scaleChanged.emit(evt));
   }
 
   loadScene$(path: string) {
@@ -71,6 +88,14 @@ export class ThreedBoxComponent implements OnInit, AfterViewInit {
 
   private onClick() {
     const intersected = this.compSrv.proRaycasterCtrllor.intersectedObj;
+    // // 对辅助工具不检测
+    // if (intersected) {
+    //   const isMemberOfTool = Boolean(findAncestorWhere(intersected, obj => obj.layers.isEnabled(LayerCode.TOOLS)));
+    //   if (isMemberOfTool) {
+    //     return;
+    //   }
+    // }
     this.selected.next(intersected);
+    this.transControlSrv.setObject(intersected);
   }
 }

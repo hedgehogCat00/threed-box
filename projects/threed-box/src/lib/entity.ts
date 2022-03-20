@@ -21,3 +21,15 @@ export const stateMeshProps = [
     type: ''
   }
 ];
+
+export enum LayerCode {
+  TOOLS = 2
+}
+
+export interface TransformControlEvt {
+  value: any;
+  /**
+   * 若拖拽完成，则为 true
+   */
+  confirm?: boolean;
+}

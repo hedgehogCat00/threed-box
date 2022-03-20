@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { BoxGeometry, Mesh, MeshBasicMaterial, Group } from 'three';
-import { State } from 'projects/threed-box/src/lib/entity';
+import { State, TransformControlEvt } from 'projects/threed-box/src/lib/entity';
 import { ThreedBoxComponent } from 'projects/threed-box/src/public-api';
 import { ConfigManagerService } from './config-manager.service';
 
@@ -9,6 +9,8 @@ import { CommandManagerService } from './command-manager.service';
 import { AddStateCommand, RemoveStateCommand } from './commands/state.command';
 import { StatesPanelComponent } from './states-panel/states-panel.component';
 import { StatesUtilService } from './states-panel/states-util.service';
+import { PropTabsComponent } from './prop-tabs/prop-tabs.component';
+import { StateService } from 'projects/threed-box/src/lib/state.service';
 
 @Component({
   selector: 'app-threed-box-editor',
@@ -17,6 +19,8 @@ import { StatesUtilService } from './states-panel/states-util.service';
 })
 export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('threedBox') threedBox!: ThreedBoxComponent;
+  @ViewChild('propTabs') propTabs!: PropTabsComponent;
+
   scene!: THREE.Scene;
   selectedObj!: THREE.Object3D;
 
@@ -95,6 +99,14 @@ export class ThreedBoxEditorComponent implements OnInit, AfterViewInit {
       this.selectedObj = obj;
     }
   }
+
+  onPositionChanged(evt: TransformControlEvt) {
+    const activeState = StateService.getActiveState(this.selectedObj);
+    const stateSrv = this.threedBox.stateSrv;
+    stateSrv.setState(this.selectedObj, activeState, evt.value);
+  }
+  onScaleChanged(evt: TransformControlEvt) { }
+  onRotationChanged(evt: TransformControlEvt) { }
 
   exportConfig() {
     this.configSrv.export(this.scene);

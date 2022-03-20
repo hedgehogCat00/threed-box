@@ -3,7 +3,7 @@ import { SFSchema, SFValueChange } from '@delon/form';
 import { State } from 'projects/threed-box/src/lib/entity';
 import { Euler, Vector3 } from 'three';
 import { CommandManagerService } from '../../command-manager.service';
-import { SetEulerCommand } from '../../commands/object.command';
+import { SetVec3Command } from '../../commands/object.command';
 
 @Component({
   selector: 'object-prop',
@@ -33,7 +33,7 @@ export class ObjectPropComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.initSchema();
+    this.init();
   }
 
   onFormValueChange(evt: SFValueChange) {
@@ -47,12 +47,13 @@ export class ObjectPropComponent implements OnInit, AfterViewInit, OnChanges {
       // });
       // // 同步到物体
       // this.object.rotation.set(pathVal.x, pathVal.y, pathVal.z);
-      const cmd = new SetEulerCommand(this.data, this.object as any, pathVal);
+      // const cmd = new SetEulerCommand(this.data, this.object as any, pathVal);
+      const cmd = new SetVec3Command(this.data, this.object, 'rotation', pathVal);
       this.commandSrv.exec(cmd, null);
     }
   }
 
-  private initSchema() {
+  private init() {
     // const activeStateIdx = this.object.userData.currState || 0;
     const state: State = this.object.userData.states[this.activeStateIdx || 0];
     const schema: SFSchema = {

@@ -1,4 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { LayerCode } from 'projects/threed-box/src/lib/entity';
+import { Layers } from 'three';
 
 @Component({
   selector: 'hierarchy-tree',
@@ -31,6 +33,10 @@ export class ThreedBoxEditorHierarchyTreeComponent implements OnInit {
       const curr = queue.shift();
       const obj: THREE.Object3D = curr.obj;
       const node = curr.node;
+      // 不展示 tools 层的节点
+      if ((obj.layers as Layers).isEnabled(LayerCode.TOOLS)) {
+        continue;
+      }
 
       Object.assign(curr.node, {
         key: obj.uuid,

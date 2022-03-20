@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ControlWidget } from '@delon/form';
 
 @Component({
@@ -23,7 +23,7 @@ import { ControlWidget } from '@delon/form';
     preserveWhitespaces: false,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EulerWidget extends ControlWidget implements OnInit {
+export class EulerWidget extends ControlWidget implements OnInit, OnDestroy {
     static readonly KEY = 'euler';
     displayValues = { x: 0, y: 0, z: 0 };
 
@@ -68,15 +68,26 @@ export class EulerWidget extends ControlWidget implements OnInit {
         this._zVal = this.radiant2Angle(rawVal.z);
     }
 
+    ngOnDestroy(): void {
+
+    }
+
+    reset(_value: any): void {
+        this.setValue(_value);
+        this._xVal = this.radiant2Angle(_value?.x || 0);
+        this._yVal = this.radiant2Angle(_value?.y || 0);
+        this._zVal = this.radiant2Angle(_value?.z || 0);
+    }
+
     // change(value: any) {
     //     this.setValue(value);
     // }
 
-    private radiant2Angle(rad: number) {
+    private radiant2Angle(rad: number = 0) {
         return rad / Math.PI * 180;
     }
 
-    private angle2Rad(angle: number) {
+    private angle2Rad(angle: number = 0) {
         return angle / 180 * Math.PI;
     }
 }

@@ -31,7 +31,14 @@ export class StateService {
     states.push(clone);
   }
 
-  setState(obj: THREE.Object3D, state: Partial<State>, val: any) { }
+  setState(obj: THREE.Object3D, state: Partial<State>, val: any) {
+    const states = obj.userData.states;
+    const idx = states.findIndex((s: State) => s.id === state.id);
+    if (idx > -1) {
+      const targetState = states[idx];
+      Object.assign(targetState, val);
+    }
+  }
 
   removeState(obj: THREE.Object3D, state: Partial<State>) {
     const states = obj.userData.states;
@@ -40,6 +47,14 @@ export class StateService {
       const targetState = states.splice(idx, 1);
       // TODO 递归释放资源
     }
+  }
+
+  static getActiveState(obj: THREE.Object3D) {
+    const activeStateIdx = obj.userData.activeStateIdx;
+    if (activeStateIdx !== undefined) {
+      return obj.userData.states[activeStateIdx];
+    }
+    return undefined;
   }
 
   private genStateValues(obj: any): StateValues {
